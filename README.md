@@ -40,6 +40,41 @@ Learnova is a modern, AI-powered educational platform built to eliminate the ine
 - Attendance validation and conflict resolution built-in
 - Reduces manual roll-call time dramatically
 
+#### Attendance Passcode Masking Guidelines
+
+Attendance passcodes are short-lived classroom controls and should be treated like
+credentials throughout the app. When adding or reviewing attendance flows, keep
+the visible UI useful for teachers without exposing the raw passcode anywhere a
+student, log reader, screenshot, or browser extension can capture it.
+
+**Display rules**
+- Mask passcodes by default in dashboards, confirmation dialogs, toast messages,
+  and shared screenshots. Use a pattern such as `•••• 7392` only when the last
+  four characters are needed for teacher verification.
+- Add a deliberate reveal action for teachers instead of rendering the full value
+  automatically. Reveal controls should be labelled clearly and reset back to the
+  masked state after navigation, refresh, or dialog close.
+- Never include the passcode in page titles, URLs, query strings, localStorage
+  keys, analytics events, notification text, or copy-to-clipboard success
+  messages.
+
+**Code and logging rules**
+- Keep placeholders in examples and docs, for example
+  `ATTENDANCE_PASSCODE=replace_with_teacher_generated_code`.
+- Redact passcodes before writing debug logs, API errors, telemetry, or test
+  snapshots. Prefer `attendancePasscode: "[REDACTED]"` when a field name is
+  useful for troubleshooting.
+- Do not commit seeded classroom passcodes, screenshots showing real codes, or
+  `.env.local` files. The repository checks expect secret-like values to remain
+  outside version control.
+
+**Reviewer checklist**
+- Verify attendance pages mask passcodes on first render.
+- Confirm reveal/copy actions are teacher-only and intentionally triggered.
+- Scan changed files for raw `passcode`, `attendanceCode`, or similar values in
+  logs, fixtures, documentation examples, and tests.
+- Check that any demo value is clearly fake and cannot be reused in a live class.
+
 ### 📊 Role-Specific Dashboards
 - **Student Dashboard** — view attendance records and academic progress
 - **Teacher Dashboard** — manage classes, take attendance, monitor students
